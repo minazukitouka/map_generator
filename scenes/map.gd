@@ -8,8 +8,9 @@ var wall: int
 var floor: int
 var small_room_threshold: int
 
-var cells := []
+var cells: PackedByteArray
 var rooms: Array[Room] = []
+var debug_cells: Array[Vector2i] = []
 
 func _init(width: int, height: int, wall: int, floor: int):
 	self.width = width
@@ -28,21 +29,18 @@ func generate() -> void:
 	connect_rooms()
 
 func generate_empty_map(fill_with: int = 0):
-	var cells = []
-	for x in range(width):
-		var column = []
-		for y in range(height):
-			column.append(fill_with)
-		cells.append(column)
+	var cells = PackedByteArray()
+	cells.resize(width * height)
+	cells.fill(fill_with)
 	return cells
 
 func generate_noise() -> void:
 	for x in range(width):
 		for y in range(height):
-			if randf() < 0.64:
-				cells[x][y] = wall
+			if randf() < 0.6:
+				set_cell(x, y, wall)
 			else:
-				cells[x][y] = floor
+				set_cell(x, y, floor)
 
 func apply_cellular_automata(wall_threshold: int = 4) -> void:
 	var new_cells = generate_empty_map(0)
@@ -50,9 +48,9 @@ func apply_cellular_automata(wall_threshold: int = 4) -> void:
 		for y in range(height):
 			var walls_count := get_walls_count(x, y, wall)
 			if walls_count > wall_threshold:
-				new_cells[x][y] = wall
+				new_cells[x * width + y] = wall
 			else:
-				new_cells[x][y] = floor
+				new_cells[x * width + y] = floor
 	cells = new_cells
 
 func scan_rooms() -> void:
@@ -60,8 +58,8 @@ func scan_rooms() -> void:
 	var scanned_map = generate_empty_map(0)
 	for x in range(width):
 		for y in range(height):
-			if cells[x][y] == wall:
-				scanned_map[x][y] = 1
+			if get_cell(x, y) == wall:
+				scanned_map[x * width + y] = 1
 			else:
 				var room = scan_room(x, y, scanned_map)
 				if !room.is_empty():
@@ -71,48 +69,49 @@ func fill_small_rooms_with_wall() -> void:
 	for room in rooms:
 		if room.cells.size() < small_room_threshold:
 			for cell in room.cells:
-				cells[cell.x][cell.y] = wall
+				set_cell(cell.x, cell.y, wall)
 	rooms = rooms.filter(func(room: Room): return room.size() >= small_room_threshold)
 
+func set_cell(x: int, y: int, value: int) -> void:
+	cells[x * width + y] = value
+
 func get_cell(x: int, y: int) -> int:
-	return cells[x][y]
+	return cells[x * width + y]
 
 func is_in_map(x: int, y: int) -> bool:
 	return x >= 0 && x < width && y >= 0 && y < height
 
 func connect_rooms() -> void:
 	while rooms.size() > 1:
-		print(rooms.size())
 		rooms.sort_custom(func(a, b): return a.size() < b.size())
-		var room = rooms[0]
-		room.find_edges()
-
-		var result = find_nearest_floor_for_room(room)
-		var edge = result[0]
-		var target = result[1]
-		create_tunnel(edge, target)
+		for room in rooms:
+			room.find_edges()
+			var result = find_nearest_floor_for_room(room)
+			var edge = result[0]
+			var target = result[1]
+			create_tunnel(edge, target)
 		scan_rooms()
 
 # private
 
 func get_walls_count(x: int, y: int, wall: int) -> int:
 	var walls_count = 0
-	if x + 1 >= width || cells[x + 1][y] == wall: walls_count += 1 # right
-	if y - 1 < 0 || cells[x][y - 1] == wall: walls_count += 1 # top
-	if x - 1 < 0 || cells[x - 1][y] == wall: walls_count += 1 # left
-	if y + 1 >= height || cells[x][y + 1] == wall: walls_count += 1 # bottom
-	if x + 1 >= width || y - 1 < 0 || cells[x + 1][y - 1] == wall: walls_count += 1 # top-right
-	if x - 1 < 0 || y - 1 < 0 || cells[x - 1][y - 1] == wall: walls_count += 1 # top-left
-	if x - 1 < 0 || y + 1 >= height || cells[x - 1][y + 1] == wall: walls_count += 1 # bottom-left
-	if x + 1 >= width || y + 1 >= height || cells[x + 1][y + 1] == wall: walls_count += 1 # bottom-right
+	if x + 1 >= width || get_cell(x + 1, y) == wall: walls_count += 1 # right
+	if y - 1 < 0 || get_cell(x, y - 1) == wall: walls_count += 1 # top
+	if x - 1 < 0 || get_cell(x - 1, y) == wall: walls_count += 1 # left
+	if y + 1 >= height || get_cell(x, y + 1) == wall: walls_count += 1 # bottom
+	if x + 1 >= width || y - 1 < 0 || get_cell(x + 1, y - 1) == wall: walls_count += 1 # top-right
+	if x - 1 < 0 || y - 1 < 0 || get_cell(x - 1, y - 1) == wall: walls_count += 1 # top-left
+	if x - 1 < 0 || y + 1 >= height || get_cell(x - 1, y + 1) == wall: walls_count += 1 # bottom-left
+	if x + 1 >= width || y + 1 >= height || get_cell(x + 1, y + 1) == wall: walls_count += 1 # bottom-right
 	return walls_count
 
 func scan_room(x: int, y: int, scanned_map) -> Room:
-	var room = Room.new(self)
+	var room := Room.new(self)
 	var unscaned_cells := [Vector2i(x, y)]
 
 	while unscaned_cells.size() > 0:
-		var cell = unscaned_cells.pop_front()
+		var cell := unscaned_cells.pop_front()
 		for unscaned_cell in scan_cell(cell.x, cell.y, scanned_map, room):
 			unscaned_cells.push_back(unscaned_cell)
 	return room
@@ -120,9 +119,9 @@ func scan_room(x: int, y: int, scanned_map) -> Room:
 func scan_cell(x: int, y: int, scanned_map, room: Room) -> Array[Vector2i]:
 	if !is_in_map(x, y):
 		return []
-	if cells[x][y] == wall || scanned_map[x][y] == 1:
+	if get_cell(x, y) == wall || scanned_map[x * width + y] == 1:
 		return []
-	scanned_map[x][y] = 1
+	scanned_map[x * width + y] = 1
 	room.cells.append(Vector2i(x, y))
 
 	return [
@@ -178,6 +177,7 @@ func create_tunnel(from: Vector2i, to: Vector2i) -> void:
 		dig(cell.x, cell.y - 1)
 		dig(cell.x - 1, cell.y)
 		dig(cell.x, cell.y + 1)
+		debug_cells.append(cell)
 
 func create_tunnel_from_x(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
 	var tunnel: Array[Vector2i] = []
@@ -203,4 +203,4 @@ func create_tunnel_from_y(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
 
 func dig(x: int, y: int) -> void:
 	if is_in_map(x, y):
-		cells[x][y] = floor
+		set_cell(x, y, floor)
