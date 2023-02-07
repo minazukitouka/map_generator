@@ -33,9 +33,9 @@ func redraw_tilemap() -> void:
 	tile_map.clear()
 	for x in range(width):
 		for y in range(height):
-			tile_map.set_cell(0, Vector2i(x, y), 0, Vector2i(1, 1))
-			if randf() < 0.05:
-				tile_map.set_cell(0, Vector2i(x, y), 0, Vector2i(2, 1))
+			# tile_map.set_cell(0, Vector2i(x, y), 0, Vector2i(1, 1))
+			#if randf() < 0.05:
+			#	tile_map.set_cell(0, Vector2i(x, y), 0, Vector2i(2, 1))
 			if map.get_cell(x, y) == FLOOR:
 				cells.append(Vector2i(x, y))
 	tile_map.set_cells_terrain_connect(0, cells, 0, 0)
