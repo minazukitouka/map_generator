@@ -1,6 +1,6 @@
 extends Resource
 
-const Map := preload("res://scenes/map.gd")
+const Map := preload("res://scripts/map.gd")
 
 var map: Map
 var cells: Array[Vector2i] = []

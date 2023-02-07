@@ -1,6 +1,6 @@
 extends Resource
 
-const Room := preload("res://scenes/room.gd")
+const Room := preload("res://scripts/room.gd")
 
 var width: int
 var height: int

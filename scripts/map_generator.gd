@@ -1,7 +1,7 @@
 extends Node2D
 
-const Room := preload("res://scenes/room.gd")
-const Map := preload("res://scenes/map.gd")
+const Room := preload("res://scripts/room.gd")
+const Map := preload("res://scripts/map.gd")
 
 @export var width := 100
 @export var height := 100
