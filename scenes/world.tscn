@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://d0o3podak708o"]
+[gd_scene load_steps=10 format=3 uid="uid://d0o3podak708o"]
 
 [ext_resource type="PackedScene" uid="uid://cytwhqbhdi3q8" path="res://scenes/water.tscn" id="1_6wuu8"]
 [ext_resource type="Texture2D" uid="uid://c0qrboh5sbtuv" path="res://assets/cloud.png" id="2_8wbh1"]
 [ext_resource type="Script" path="res://scripts/world_generator.gd" id="3_rb6lw"]
 [ext_resource type="PackedScene" uid="uid://cbrcw0i1wd0ld" path="res://assets/ground_earth.tscn" id="4_6leji"]
 [ext_resource type="Script" path="res://scripts/world_camera.gd" id="5_5cv4u"]
+[ext_resource type="PackedScene" uid="uid://27562usgsnoo" path="res://scenes/player.tscn" id="5_l70qb"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_q1x5j"]
 panorama = ExtResource("2_8wbh1")
@@ -28,7 +29,8 @@ environment = SubResource("Environment_xqebg")
 script = ExtResource("3_rb6lw")
 water_plain = ExtResource("1_6wuu8")
 floor_cell = ExtResource("4_6leji")
+player_scene = ExtResource("5_l70qb")
 
-[node name="WorldCamera" type="Camera3D" parent="."]
-transform = Transform3D(-1, 7.57103e-08, -4.37114e-08, 0, 0.5, 0.866025, 8.74228e-08, 0.866025, -0.5, 0, 8, 0)
+[node name="WorldCamera" type="Camera3D" parent="WorldGenerator"]
+transform = Transform3D(1, 0, 0, 0, 0.642788, 0.766044, 0, -0.766044, 0.642788, 0, 8, 6)
 script = ExtResource("5_5cv4u")

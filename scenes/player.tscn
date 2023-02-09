@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=3 uid="uid://27562usgsnoo"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_15o58"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_seusy"]
+albedo_color = Color(0.360784, 0.403922, 1, 1)
+metallic = 0.6
+roughness = 0.0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_m4aau"]
+material = SubResource("StandardMaterial3D_seusy")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pbhni"]
+albedo_color = Color(0.533333, 0.380392, 1, 1)
+metallic = 0.6
+roughness = 0.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_5s7mf"]
+material = SubResource("StandardMaterial3D_pbhni")
+radius = 0.1
+height = 0.2
+
+[node name="Player" type="CharacterBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_15o58")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_m4aau")
+
+[node name="Eye" type="MeshInstance3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.5)
+mesh = SubResource("SphereMesh_5s7mf")

@@ -7,7 +7,7 @@
 albedo_texture = ExtResource("2_o2sbv")
 texture_filter = 0
 
-[node name="ground_earth" instance=ExtResource("1_gl06i")]
+[node name="GroundEarth" instance=ExtResource("1_gl06i")]
 
 [node name="groundEarth" parent="RootNode" index="0"]
 material_override = SubResource("StandardMaterial3D_yde37")

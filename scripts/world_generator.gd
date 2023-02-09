@@ -3,11 +3,14 @@ extends Node
 const Room := preload("res://scripts/room.gd")
 const Map := preload("res://scripts/map.gd")
 
+@onready var world_camera: Camera3D = $WorldCamera
+
 @export var width := 100
 @export var height := 100
 
 @export var water_plain: PackedScene
 @export var floor_cell: PackedScene
+@export var player_scene: PackedScene
 
 var map: Map
 
@@ -25,6 +28,7 @@ func generate_map():
 	map.small_room_threshold = SMALL_ROOM_THRESHOLD
 	map.generate()
 	generate_terrain()
+	generate_player()
 	var elapsed_time := Time.get_ticks_msec() - start_time
 	print(elapsed_time, 'ms')
 
@@ -42,6 +46,18 @@ func generate_terrain() -> void:
 				var cell = floor_cell.instantiate()
 				cell.position = Vector3(x, 0.5, y)
 				add_child(cell)
+
+func generate_player() -> void:
+	while true:
+		var x = randi() % width
+		var y = randi() % height
+		if map.get_cell(x, y) == FLOOR:
+			var player = player_scene.instantiate()
+			player.position = Vector3(x, 2, y)
+			add_child(player)
+			remove_child(world_camera)
+			player.call_deferred('add_child', world_camera)
+			return
 
 func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("ui_accept"):
