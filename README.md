@@ -12,4 +12,4 @@ https://youtu.be/8fmnIB5vsIY
 
 ## License
 
-The Unlicense
+The Unlicense (EXCEPT `/vendor`)

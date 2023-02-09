@@ -1,0 +1,13 @@
+[gd_scene load_steps=4 format=3 uid="uid://cbrcw0i1wd0ld"]
+
+[ext_resource type="PackedScene" uid="uid://dbpxmt5hndf5m" path="res://vendor/blocks/ground_earth.fbx" id="1_gl06i"]
+[ext_resource type="Texture2D" uid="uid://bojvcfylpi1yv" path="res://vendor/blocks/ground_earth.png" id="2_o2sbv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yde37"]
+albedo_texture = ExtResource("2_o2sbv")
+texture_filter = 0
+
+[node name="ground_earth" instance=ExtResource("1_gl06i")]
+
+[node name="groundEarth" parent="RootNode" index="0"]
+material_override = SubResource("StandardMaterial3D_yde37")
