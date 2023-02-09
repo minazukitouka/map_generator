@@ -1,8 +1,8 @@
 extends Node2D
 
 @export var scroll_speed := 500
-@onready var screen_width := ProjectSettings.get_setting('display/window/size/viewport_width')
-@onready var screen_height := ProjectSettings.get_setting('display/window/size/viewport_height')
+@onready var screen_width := ProjectSettings.get_setting('display/window/size/viewport_width') as int
+@onready var screen_height := ProjectSettings.get_setting('display/window/size/viewport_height') as int
 @onready var camera_2d: Camera2D = $Camera2D
 
 func _process(delta: float) -> void:

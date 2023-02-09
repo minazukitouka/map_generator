@@ -108,10 +108,10 @@ func get_walls_count(x: int, y: int, wall: int) -> int:
 
 func scan_room(x: int, y: int, scanned_map) -> Room:
 	var room := Room.new(self)
-	var unscaned_cells := [Vector2i(x, y)]
+	var unscaned_cells : Array[Vector2i] = [Vector2i(x, y)]
 
 	while unscaned_cells.size() > 0:
-		var cell := unscaned_cells.pop_front()
+		var cell = unscaned_cells.pop_front()
 		for unscaned_cell in scan_cell(cell.x, cell.y, scanned_map, room):
 			unscaned_cells.push_back(unscaned_cell)
 	return room
