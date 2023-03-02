@@ -48,9 +48,9 @@ func apply_cellular_automata(wall_threshold: int = 4) -> void:
 		for y in range(height):
 			var walls_count := get_walls_count(x, y, wall)
 			if walls_count > wall_threshold:
-				new_cells[x * width + y] = wall
+				new_cells[x + y * width] = wall
 			else:
-				new_cells[x * width + y] = floor
+				new_cells[x + y * width] = floor
 	cells = new_cells
 
 func scan_rooms() -> void:
@@ -59,7 +59,7 @@ func scan_rooms() -> void:
 	for x in range(width):
 		for y in range(height):
 			if get_cell(x, y) == wall:
-				scanned_map[x * width + y] = 1
+				scanned_map[x + y * width] = 1
 			else:
 				var room = scan_room(x, y, scanned_map)
 				if !room.is_empty():
@@ -73,10 +73,10 @@ func fill_small_rooms_with_wall() -> void:
 	rooms = rooms.filter(func(room: Room): return room.size() >= small_room_threshold)
 
 func set_cell(x: int, y: int, value: int) -> void:
-	cells[x * width + y] = value
+	cells[x + y * width] = value
 
 func get_cell(x: int, y: int) -> int:
-	return cells[x * width + y]
+	return cells[x + y * width]
 
 func is_in_map(x: int, y: int) -> bool:
 	return x >= 0 && x < width && y >= 0 && y < height
@@ -119,9 +119,9 @@ func scan_room(x: int, y: int, scanned_map) -> Room:
 func scan_cell(x: int, y: int, scanned_map, room: Room) -> Array[Vector2i]:
 	if !is_in_map(x, y):
 		return []
-	if get_cell(x, y) == wall || scanned_map[x * width + y] == 1:
+	if get_cell(x, y) == wall || scanned_map[x + y * width] == 1:
 		return []
-	scanned_map[x * width + y] = 1
+	scanned_map[x + y * width] = 1
 	room.cells.append(Vector2i(x, y))
 
 	return [

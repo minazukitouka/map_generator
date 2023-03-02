@@ -4,7 +4,7 @@
 
 ## 版本
 
-Godot 4.0 beta 17
+Godot 4.0 RC 1
 
 ## 實況網址
 
